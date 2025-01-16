@@ -1,0 +1,6 @@
+@BookToFlyAPI_HostAddress = http://localhost:5287
+
+GET {{BookToFlyAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

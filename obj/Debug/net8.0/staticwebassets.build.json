@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "sQmmfVkm2SfZW1cItguT8Ri9ak6dORZWk3E1X139Xog=",
+  "Source": "BookToFlyAPI",
+  "BasePath": "_content/BookToFlyAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
