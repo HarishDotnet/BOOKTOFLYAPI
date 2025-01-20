@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BookToFlyAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3bb27d0eab9b9f88e90e0041aa4b165aee1f838c")]
 [assembly: System.Reflection.AssemblyProductAttribute("BookToFlyAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BookToFlyAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

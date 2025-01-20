@@ -9,9 +9,6 @@ namespace BookToFlyAPI.MappingDTO{
     {
         // Mapping from TicketInputDTO to Ticket
         CreateMap<TicketInputDTO, Ticket>();
-
-        CreateMap<FlightInputDTO,FlightDetails>();
-
         // Mapping from Ticket to TicketOutputDTO
         CreateMap<Ticket, TicketOutputDTO>()
             .ForMember(dest => dest.BookingId, opt => opt.MapFrom(src => src.BookingId))
@@ -22,6 +19,10 @@ namespace BookToFlyAPI.MappingDTO{
             .ForMember(dest => dest.FlightName, opt => opt.MapFrom(src => src.FlightName))
             .ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.Source))
             .ForMember(dest => dest.Destination, opt => opt.MapFrom(src => src.Destination));
+
+        CreateMap<FlightInputDTO,FlightDetails>();
+        CreateMap<FlightDetails,FlightInputDTO>();
+
     }
 }
 

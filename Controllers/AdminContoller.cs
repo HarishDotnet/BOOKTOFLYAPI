@@ -37,7 +37,7 @@ namespace BookToFlyAPI.Controllers
                 }
 
                 admin.Password = BCrypt.Net.BCrypt.HashPassword(admin.Password);
-                _dbContext.Add(admin);
+                await _dbContext.AddAsync(admin);
                 await _dbContext.SaveChangesAsync();
 
                 _logger.LogInformation($"Admin {admin.AdminName} registered successfully.");

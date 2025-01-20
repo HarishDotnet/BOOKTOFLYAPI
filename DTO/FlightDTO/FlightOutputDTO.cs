@@ -1,12 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace BookToFlyAPI.DTO.FlightDTO
 {
     public class FlightOutputDTO
     {
-        
+        public string FlightNumber { get; set; }
+
+        public string FlightName { get; set; }
+
+        public string Source { get; set; }
+
+        public string Destination { get; set; }
+
+        public int AvailableSeats { get; set; }
+
+        public decimal TicketPrice { get; set; }
+
+        public TimeSpan DepartureTime { get; set; }
+
+        public TimeSpan ArrivalTime { get; set; }
+        public string FlightType{ get; set;}
     }
 }

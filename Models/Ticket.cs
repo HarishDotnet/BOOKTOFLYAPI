@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using BookToFlyAPI.Controllers;
 
 namespace BookToFlyAPI.Models
 {

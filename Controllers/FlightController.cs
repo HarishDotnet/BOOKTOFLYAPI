@@ -4,6 +4,7 @@ using BookToFlyAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using BookToFlyAPI.DTO.FlightDTO;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookToFlyAPI.Controllers
 {
@@ -24,40 +25,48 @@ namespace BookToFlyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAllFlights(string FlightType)
+        public async Task<IActionResult> GetAllFlights(string FlightType)
         {
             if (!(FlightType.Trim().ToUpper().Equals("IF") || FlightType.Trim().ToUpper().Equals("DF")))
             {
                 return BadRequest(new { message = "Enter IF for International Flight or DF for Domestic Flight." });
             }
-            var flights = _dbContext.flightDetails.Where(f => f.FlightNumber.StartsWith(FlightType.Trim().ToUpper())).ToList();
+
+            var flights = await _dbContext.flightDetails
+                .Where(f => f.FlightNumber.StartsWith(FlightType.Trim().ToUpper()))
+                .ToListAsync();
+
             if (!flights.Any())
             {
                 return NotFound("FlightType Not Found.");
             }
+
             return Ok(flights);
         }
 
         [HttpGet("GetFlightDetails/{flightNumber}")]
-        public IActionResult GetFlightByNumber(string flightNumber)
+        public async Task<IActionResult> GetFlightByNumber(string flightNumber)
         {
-            var flight = _dbContext.flightDetails.FirstOrDefault(f => f.FlightNumber == flightNumber);
+            var flight = await _dbContext.flightDetails.FirstOrDefaultAsync(f => f.FlightNumber == flightNumber);
             if (flight == null)
             {
                 return NotFound(new { Message = "Flight not found." });
             }
+
             return Ok(flight);
         }
 
         [HttpPost("AddFlight")]
         [Authorize(Roles = "Admin")]
-        public ActionResult<FlightDetails> CreateFlight([FromBody] FlightInputDTO flightDetails)
+        public async Task<ActionResult<FlightDetails>> CreateFlight([FromBody] FlightInputDTO flightDetails)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var flightDetail = _mapper.Map<FlightDetails>(flightDetails);
+
             if (flightDetail.FlightNumber.StartsWith("DF"))
             {
                 flightDetail.FlightType = "Domestic Flight";
@@ -71,22 +80,27 @@ namespace BookToFlyAPI.Controllers
                 return BadRequest(new { Message = "Invalid FlightNumber format. It must start with 'DF' or 'IF'." });
             }
 
-            _dbContext.flightDetails.Add(flightDetail);
-            _dbContext.SaveChanges();
+            await _dbContext.flightDetails.AddAsync(flightDetail);
+            await _dbContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetFlightByNumber), new { flightNumber = flightDetail.FlightNumber }, flightDetail);
+            return CreatedAtAction(nameof(GetFlightByNumber), 
+            new { flightNumber = flightDetail.FlightNumber },
+            new {success = true,
+                 message = "Flight created successfully.",
+                 data = flightDetail
+            });
         }
 
         [HttpPut("UpdateFlight/{flightNumber}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UpdateFlight(string flightNumber, [FromBody] FlightDetails updatedFlight)
+        public async Task<IActionResult> UpdateFlight(string flightNumber, [FromBody] FlightDetails updatedFlight)
         {
             if (flightNumber != updatedFlight.FlightNumber)
             {
                 return BadRequest("Flight number in the URL does not match the flight number in the body.");
             }
 
-            var existingFlight = _dbContext.flightDetails.FirstOrDefault(f => f.FlightNumber == flightNumber);
+            var existingFlight = await _dbContext.flightDetails.FirstOrDefaultAsync(f => f.FlightNumber == flightNumber);
             if (existingFlight == null)
             {
                 return NotFound($"Flight with flight number {flightNumber} not found.");
@@ -101,23 +115,23 @@ namespace BookToFlyAPI.Controllers
             existingFlight.ArrivalTime = updatedFlight.ArrivalTime;
             existingFlight.FlightType = updatedFlight.FlightType;
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return Ok("Flight updated successfully.");
         }
 
         [HttpDelete("DeleteFlight/{flightNumber}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteFlight(string flightNumber)
+        public async Task<IActionResult> DeleteFlight(string flightNumber)
         {
-            var flight = _dbContext.flightDetails.FirstOrDefault(f => f.FlightNumber == flightNumber);
+            var flight = await _dbContext.flightDetails.FirstOrDefaultAsync(f => f.FlightNumber == flightNumber);
             if (flight == null)
             {
                 return NotFound(new { Message = "Flight not found." });
             }
 
             _dbContext.flightDetails.Remove(flight);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return Ok(new { message = "Flight deleted successfully." });
         }

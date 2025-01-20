@@ -41,5 +41,6 @@ namespace BookToFlyAPI.Models
         // Flight type (Domestic or International)
         [Required]
         public string FlightType{ get; set;}
+        
     }
 }
